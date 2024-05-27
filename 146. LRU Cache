@@ -1,0 +1,71 @@
+
+class LRUCache {
+public:
+    class node {
+    public:
+        int key;
+        int val;
+        node* next;
+        node* prev;
+        node(int _key, int _val) { // constructor
+            key = _key;
+            val = _val;
+            next = nullptr;
+            prev = nullptr;
+        }
+    };
+
+    node* head = new node(-1, -1);
+    node* tail = new node(-1, -1);
+    int cpp;
+    unordered_map<int, node*> umap;
+
+    LRUCache(int capacity) {
+        cpp = capacity;
+        head->next = tail;
+        tail->prev = head;    
+    }
+    
+    void addnode(node* newnode) {
+        node* temp = head->next;
+        newnode->next = temp;
+        newnode->prev = head;
+        head->next = newnode;
+        temp->prev = newnode;
+    }
+
+    void deletenode(node* delnode) {
+        node* delprev = delnode->prev;
+        node* delnext = delnode->next;
+        delprev->next = delnext;
+        delnext->prev = delprev;
+    }
+
+    int get(int key_) {
+        if (umap.find(key_) != umap.end()) {
+            node* resnode = umap[key_];
+            int res = resnode->val;
+            umap.erase(key_);
+            deletenode(resnode);
+            addnode(resnode);
+            umap[key_] = head->next;
+            return res;
+        }
+        return -1;
+    }
+    
+    void put(int key_, int value) {
+        if (umap.find(key_) != umap.end()) { // if exist
+            node* existingnode = umap[key_];
+            umap.erase(key_);
+            deletenode(existingnode);
+        }
+        if (umap.size() == cpp) {
+            umap.erase(tail->prev->key);
+            deletenode(tail->prev);
+        }
+        node* newnode = new node(key_, value);
+        addnode(newnode);
+        umap[key_] = newnode;
+    }
+};
