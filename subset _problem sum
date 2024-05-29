@@ -1,0 +1,19 @@
+class Solution{   
+public:
+
+    bool fun(vector<int>&arr, int target,int inx,vector<vector<int>> &dp){
+        if(target==0) return true;
+        if(inx==0) return (arr[0]==target);
+        if(dp[inx][target]!=-1) return dp[inx][target];
+        bool nottake= fun(arr,target,inx-1,dp);
+        bool take=false;
+        if(arr[inx]<=target) take=fun(arr,target-arr[inx],inx-1,dp);
+        return dp[inx][target]=take || nottake;
+    }
+
+    bool isSubsetSum(vector<int>arr, int sum){
+        vector<vector<int>> dp(arr.size(),vector<int> (sum+1,-1));
+        return fun(arr,sum,arr.size()-1,dp);
+        
+    }
+};
