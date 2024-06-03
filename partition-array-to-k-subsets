@@ -1,0 +1,49 @@
+class Solution {
+public:
+    bool solve(int a[], int n, int k, int currsum, int count, std::vector<bool> &vis, int sum) {
+        if (count == k - 1) {
+            return true;
+        }
+        if (currsum > sum) {
+            return false;
+        }
+        if (currsum == sum) {
+            return solve(a, n, k, 0, count + 1, vis, sum);
+        }
+        
+        for (int i = 0; i < n; ++i) {
+            if (!vis[i]) {
+                vis[i] = true;
+                if (solve(a, n, k, currsum + a[i], count, vis, sum)) {
+                    return true;
+                }
+                vis[i] = false;
+                
+                // Skip duplicates
+                while (i + 1 < n && a[i] == a[i + 1]) {
+                    i++;
+                }
+            }
+        }
+        return false;
+    }
+    
+    bool isKPartitionPossible(int a[], int n, int k) {
+        if (k == 1) {
+            return true;
+        }
+        
+        int sum = 0;
+        for (int i = 0; i < n; ++i) {
+            sum += a[i];
+        }
+        
+        if (sum % k != 0) {
+            return false;
+        }
+        
+        std::sort(a, a + n, std::greater<int>()); // Sort in descending order
+        std::vector<bool> vis(n, false);
+        return solve(a, n, k, 0, 0, vis, sum / k);
+    }
+};
