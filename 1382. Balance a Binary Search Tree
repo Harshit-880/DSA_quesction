@@ -1,0 +1,33 @@
+
+class Solution {
+public:
+
+    void inorder(TreeNode* root,vector<int> &inval){
+        if(root==NULL) return;
+
+        inorder(root->left,inval);
+        inval.push_back(root->val);
+        inorder(root->right,inval);
+    }
+
+    TreeNode* construct(vector<int> inval,int start,int end){
+        if(start>end) return NULL;
+
+        int mid=start + (end-start)/2;
+        TreeNode* temp=new TreeNode(inval[mid]);
+        temp->left=construct(inval,start,mid-1);
+        temp->right=construct(inval,mid+1,end);
+        return temp;
+
+    }
+
+    TreeNode* balanceBST(TreeNode* root) {
+        vector<int> inval;
+
+        inorder(root,inval);
+        // for(int i=0;i<inval.size();i++){
+        //     cout<<inval[i];
+        // }
+        return construct(inval,0,inval.size()-1);
+    }
+};
