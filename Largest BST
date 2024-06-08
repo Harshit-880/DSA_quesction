@@ -1,0 +1,54 @@
+
+
+// } Driver Code Ends
+/* Tree node structure  used in the program
+
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};*/
+
+
+class nodeval{
+    public:
+    int maxnode,minnode,maxsize;
+    
+    nodeval(int minnode,int maxnode,int maxsize){
+        this->maxnode=maxnode;
+        this->minnode=minnode;
+        this->maxsize=maxsize;
+    }
+};
+
+class Solution{
+    public:
+    
+    nodeval largestbst(Node *root){
+        
+        
+        if(root==NULL)
+        return nodeval(INT_MAX,INT_MIN,0);
+        
+        auto left=largestbst(root->left);
+        auto right=largestbst(root->right);
+        
+        if(left.maxnode<root->data and right.minnode>root->data){
+            return nodeval(min(root->data,left.minnode),max(root->data,right.maxnode),left.maxsize+right.maxsize+1);
+            
+        }
+        
+        return nodeval(INT_MIN,INT_MAX,max(left.maxsize,right.maxsize));
+    }
+    
+    
+    int largestBst(Node *root)
+    {
+    	return largestbst(root).maxsize;
+    }
+};
