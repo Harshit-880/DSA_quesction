@@ -1,0 +1,24 @@
+class Solution {
+public:
+
+    int rec(vector<int>& coins, int target,int inx,vector<vector<int>> &dp){
+        if(inx==0){
+            if(target%coins[0]==0) return target/coins[0];
+            return 1e9;
+        }
+        if(dp[inx][target]!=-1) return dp[inx][target];
+        int nottake=rec(coins,target,inx-1,dp);
+        int take=1e9;
+        if(coins[inx]<=target) take=1+rec(coins,target-coins[inx],inx,dp);
+        return dp[inx][target]=min(take,nottake);
+    }
+
+    int coinChange(vector<int>& coins, int amount) {
+        int n=coins.size();
+        int count=0;
+        vector<vector<int>> dp(n,vector<int>(amount+1,-1));
+        int ans=rec(coins,amount,n-1,dp);
+        if(ans>=1e9) return -1;
+        return ans;
+    }
+};
