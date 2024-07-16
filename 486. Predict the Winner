@@ -1,0 +1,30 @@
+
+class Solution {
+public:
+    int rec(int start, int end, vector<int>& nums, vector<vector<int>>& dp) {
+        // Base cases
+        if (start == end) return nums[start];
+        if (start + 1 == end) return max(nums[start], nums[end]);
+        
+        // If already computed, return the stored result
+        if (dp[start][end] != -1) return dp[start][end];
+        
+        // Calculate the score if the player picks the start element
+        int pickStart = nums[start] + min(rec(start + 2, end, nums, dp), rec(start + 1, end - 1, nums, dp));
+        
+        // Calculate the score if the player picks the end element
+        int pickEnd = nums[end] + min(rec(start + 1, end - 1, nums, dp), rec(start, end - 2, nums, dp));
+        
+        // Store the result in dp array and return it
+        dp[start][end] = max(pickStart, pickEnd);
+        return dp[start][end];
+    }
+
+    bool predictTheWinner(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        int player1 = rec(0, n - 1, nums, dp);
+        int totalSum = accumulate(nums.begin(), nums.end(), 0);
+        return player1 >= (totalSum - player1);
+    }
+};
