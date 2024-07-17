@@ -1,0 +1,38 @@
+
+class Solution {
+public:
+
+    bool CheckPalindrome(string s){
+        int n=s.size();
+        if(n==1) return true;
+        for(int i=0;i<n/2;i++){
+            if(s[i]!=s[n-1-i]) return false;
+        }
+        return true;
+    }
+
+    void rec(string part,vector<string> &current,vector<vector<string>> &ans){
+        if (part.empty()) {
+            ans.push_back(current);// base condition
+            return;
+        }
+
+        int len=part.size();
+        for(int i=1;i<=len;i++){
+            string s1=part.substr(0, i);
+            if(CheckPalindrome(s1)==true){
+                current.push_back(s1);
+                rec(part.substr(i),current,ans);
+                current.pop_back();
+            }
+        }
+    }
+
+    vector<vector<string>> partition(string s) {
+        vector<vector<string>> ans;
+        vector<string> current;        
+        rec(s,current,ans);
+        return ans;
+
+    }
+}; 
