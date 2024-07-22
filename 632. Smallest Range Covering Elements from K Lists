@@ -1,0 +1,43 @@
+class Solution {
+public:
+    vector<int> smallestRange(vector<vector<int>>& nums) {
+        int k = nums.size();
+        vector<int> next(k, 0);
+        
+        auto cmp = [&nums, &next](int i, int j) {
+            return nums[i][next[i]] > nums[j][next[j]];
+        };
+        priority_queue<int, vector<int>, decltype(cmp)> pq(cmp);
+        
+        int range_start = 0, range_end = INT_MAX;
+        int max_val = INT_MIN;
+        
+        for (int i = 0; i < k; ++i) {
+            if (!nums[i].empty()) {
+                pq.push(i);
+                max_val = max(max_val, nums[i][0]);
+            }
+        }
+        
+        while (pq.size() == k) {
+            int min_list = pq.top();
+            pq.pop();
+            
+            int current_min = nums[min_list][next[min_list]];
+            
+            if (max_val - current_min < range_end - range_start) {
+                range_start = current_min;
+                range_end = max_val;
+            }
+            
+            next[min_list]++;
+            
+            if (next[min_list] < nums[min_list].size()) {
+                pq.push(min_list);
+                max_val = max(max_val, nums[min_list][next[min_list]]);
+            }
+        }
+        
+        return {range_start, range_end};
+    }
+};
