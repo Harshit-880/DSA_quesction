@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int nonSpecialCount(int l, int r) {
+        
+        int maxsquareexist=(int)(sqrt(r));
+
+        vector<bool> markprime(maxsquareexist+1,true);
+        markprime[0]=markprime[1]=false;
+
+        // Sieve of Eratosthenes to mark non-prime numbers
+        for (int i = 2; i * i <= maxsquareexist; i++) {
+            if (markprime[i]) {
+                for (int j = i * i; j <= maxsquareexist; j += i) {
+                    markprime[j] = false;
+                }
+            }
+        }
+
+        int cnt = 0;
+        for (int i = 2; i <= maxsquareexist; i++) {
+            if (markprime[i]) {
+                int square = i * i;
+                if (square >= l && square <= r) {
+                    cnt++;
+                }
+            }
+        }
+        return r-l+1-cnt;
+    }
+};
