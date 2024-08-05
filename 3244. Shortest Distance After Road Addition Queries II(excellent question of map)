@@ -1,0 +1,48 @@
+class Solution {
+public:
+    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& queries) {
+        map<int, pair<int, int>> jump; // key: start, value: {end, reduction}
+        int cost = n - 1; // Initial cost without any jumps
+        vector<int> ans;
+
+        for (const auto& query : queries) {
+            int u = query[0], v = query[1];
+            int reduction = v - u - 1; // Reduction is v-u-1 because using the jump costs 1
+            bool validJump = true;
+
+            auto it = jump.lower_bound(u);
+
+            // Check if the new jump is within an existing jump
+            if (it != jump.begin()) {
+                auto prev = std::prev(it);
+                if (prev->second.first >= v) {
+                    validJump = false; // Current jump is completely within an existing jump
+                }
+            }
+
+            // Check if the new jump is completely within an existing jump found in lower_bound
+            if (it != jump.end() && it->first <= u && it->second.first >= v) {
+                validJump = false;
+            }
+
+            if (validJump) {
+                // Remove all jumps that are completely within the new jump
+                while (it != jump.end() && it->first < v) {
+                    if (it->second.first <= v) {
+                        cost += it->second.second;
+                        it = jump.erase(it);
+                    } else {
+                        break; // No need to proceed further if current jump overlaps partially
+                    }
+                }
+
+                jump[u] = {v, reduction};
+                cost -= reduction;
+            }
+
+            ans.push_back(cost);
+        }
+
+        return ans;
+    }
+};
