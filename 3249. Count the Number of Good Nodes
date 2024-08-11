@@ -1,0 +1,47 @@
+class Solution {
+public:
+
+
+    int dfs(vector<vector<int>>& adj, vector<int>& visited, int& goodnode, int node, int prev) {
+    visited[node] = 1;
+    bool good = true;
+    int subtree_size = 1; // Including the current node
+    int first_child_size = -1; // Size of the first child's subtree
+
+    for (const auto& it : adj[node]) {
+        if (it == prev) continue;
+
+        int child_size = dfs(adj, visited, goodnode, it, node);
+
+        if (first_child_size == -1) {
+            first_child_size = child_size; // Set size of the first child's subtree
+        } else if (child_size != first_child_size) {
+            good = false; // If any child's subtree size differs, mark the node as not good
+        }
+
+        subtree_size += child_size; // Add the size of the child's subtree to the current node's subtree size
+    }
+
+    if (good) {
+        goodnode++; // If the node is good, increment the good node count
+    }
+
+    return subtree_size; // Return the total size of the subtree rooted at the current node
+    }
+
+
+    int countGoodNodes(vector<vector<int>>& edges) {
+        int n=edges.size();
+        vector<vector<int>> adj(n+1);
+        for (const auto& edge : edges) {
+            int a = edge[0];
+            int b = edge[1];
+            adj[a].push_back(b);
+            adj[b].push_back(a);
+        }
+        vector<int> visited(n+1,0);
+        int goodnode=0;
+        dfs(adj,visited,goodnode,0,-1);
+        return goodnode;
+    }
+};
