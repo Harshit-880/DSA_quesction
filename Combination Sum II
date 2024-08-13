@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<vector<int>> ans;
+
+    void rec(vector<int>& candidates, int target, vector<int>& helper, int inx) {
+        if (target == 0) {
+            ans.push_back(helper);
+            return;
+        }
+        for (int i = inx; i < candidates.size(); i++) {
+            if (i > inx && candidates[i] == candidates[i-1]) continue;  // Skip duplicates
+            if (candidates[i] > target) break;  // Early stopping as array is sorted
+            helper.push_back(candidates[i]);
+            rec(candidates, target - candidates[i], helper, i + 1);  // Move to the next index
+            helper.pop_back();
+        }
+    }
+
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        vector<int> helper;
+        sort(candidates.begin(), candidates.end());
+        rec(candidates, target, helper, 0);
+        return ans;
+    }
+};
